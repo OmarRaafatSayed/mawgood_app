@@ -1,0 +1,30 @@
+{
+  "bcryptjs": {
+    "current": "2.4.3",
+    "wanted": "2.4.3",
+    "latest": "3.0.3",
+    "dependent": "server",
+    "location": "f:\\mawgood_app\\server\\node_modules\\bcryptjs"
+  },
+  "dotenv": {
+    "current": "16.6.1",
+    "wanted": "16.6.1",
+    "latest": "17.3.1",
+    "dependent": "server",
+    "location": "f:\\mawgood_app\\server\\node_modules\\dotenv"
+  },
+  "express": {
+    "current": "4.22.1",
+    "wanted": "4.22.1",
+    "latest": "5.2.1",
+    "dependent": "server",
+    "location": "f:\\mawgood_app\\server\\node_modules\\express"
+  },
+  "mongoose": {
+    "current": "8.23.0",
+    "wanted": "8.23.0",
+    "latest": "9.2.4",
+    "dependent": "server",
+    "location": "f:\\mawgood_app\\server\\node_modules\\mongoose"
+  }
+}

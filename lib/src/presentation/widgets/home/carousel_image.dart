@@ -11,7 +11,7 @@ import 'dots_indicator.dart';
 class CarouselImage extends StatelessWidget {
   CarouselImage({super.key});
 
-  final CarouselController _controller = CarouselController();
+  final CarouselSliderController _controller = CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,11 @@ class CarouselImage extends StatelessWidget {
 class CarouselImageWidget extends StatelessWidget {
   const CarouselImageWidget({
     super.key,
-    required CarouselController controller,
+    required CarouselSliderController controller,
     required this.index,
   }) : _controller = controller;
 
-  final CarouselController _controller;
+  final CarouselSliderController _controller;
   final int index;
 
   @override

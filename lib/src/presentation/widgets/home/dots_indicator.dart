@@ -1,4 +1,4 @@
-import 'package:carousel_slider/carousel_controller.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 
@@ -10,7 +10,7 @@ class DotsIndicatorMap extends StatelessWidget {
     required this.sliderImages,
   });
 
-  final CarouselController controller;
+  final CarouselSliderController controller;
   final int current;
   final List<Map<String, String>> sliderImages;
 
@@ -46,7 +46,7 @@ class DotsIndicatorList extends StatelessWidget {
     required this.sliderImages,
   });
 
-  final CarouselController controller;
+  final CarouselSliderController controller;
   final int current;
   final List<String> sliderImages;
 

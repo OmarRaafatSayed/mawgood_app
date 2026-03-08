@@ -11,9 +11,7 @@ const userRouter = require('./routes/user');
 const offersRouter = require('./routes/offers');
 const app = express();
 const PORT = process.env.PORT;
-const userName = process.env.DB_USERNAME;
-const password = encodeURIComponent(process.env.DB_PASSWORD);
-const DB = `mongodb+srv://${userName}:${password}@cluster0.fkliyeh.mongodb.net/flutterzon?retryWrites=true&w=majority`
+const DB = process.env.URI
 
 
 // middleware

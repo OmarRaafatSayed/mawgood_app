@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_amazon_clone_bloc/src/config/router/router.dart';
@@ -50,8 +51,9 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+  final dir = await getApplicationDocumentsDirectory();
   HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: await getApplicationDocumentsDirectory());
+      storageDirectory: HydratedStorageDirectory(dir.path));
   await dotenv.load(fileName: "config.env");
   runApp(const MyApp());
 }

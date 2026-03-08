@@ -45,7 +45,7 @@ class ProductDetailsScreen extends StatelessWidget {
     BlocProvider.of<WishListCubit>(context).wishList(product: product);
     BlocProvider.of<KeepShoppingForCubit>(context)
         .addToKeepShoppingFor(product: product);
-    final CarouselController controller = CarouselController();
+    final CarouselSliderController controller = CarouselSliderController();
 
     return Scaffold(
       appBar: const PreferredSize(
@@ -518,7 +518,7 @@ class CarouselWidget extends StatelessWidget {
 
   final int currentIndex;
   final Product product;
-  final CarouselController controller;
+  final CarouselSliderController controller;
 
   @override
   Widget build(BuildContext context) {

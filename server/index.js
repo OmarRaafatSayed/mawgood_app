@@ -11,7 +11,7 @@ const userRouter = require('./routes/user');
 const offersRouter = require('./routes/offers');
 const app = express();
 const PORT = process.env.PORT;
-const DB = process.env.URI
+const DB = process.env.MONGODB_URI || process.env.URI
 
 
 // middleware

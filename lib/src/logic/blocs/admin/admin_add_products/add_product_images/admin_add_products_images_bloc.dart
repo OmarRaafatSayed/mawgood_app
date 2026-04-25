@@ -17,7 +17,8 @@ class AdminAddProductsImagesBloc
     on<ClearImagesPressedE>(_onClearImagesPressedEHandler);
   }
 
-  void _onSelectImagesPressedHandler(event, emit) async {
+  void _onSelectImagesPressedHandler(SelectImagesPressedE event,
+      Emitter<AdminAddProductsImagesState> emit) async {
     try {
       List<File> imagesList = [];
 
@@ -46,7 +47,8 @@ class AdminAddProductsImagesBloc
     }
   }
 
-  void _onClearImagesPressedEHandler(event, emit) {
+  void _onClearImagesPressedEHandler(
+      ClearImagesPressedE event, Emitter<AdminAddProductsImagesState> emit) {
     emit(AdminAddProductsClearImagesS());
   }
 }

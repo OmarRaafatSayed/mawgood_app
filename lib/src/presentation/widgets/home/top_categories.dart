@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone_bloc/src/config/router/app_route_constants.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 import 'package:go_router/go_router.dart';
-
 import 'single_top_category_item.dart';
 
 class TopCategories extends StatelessWidget {
@@ -10,28 +9,38 @@ class TopCategories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       height: 90,
-      decoration: const BoxDecoration(gradient: Constants.goldenGradient),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border(
+          bottom: BorderSide(color: theme.colorScheme.outlineVariant, width: 0.5),
+        ),
+      ),
       child: Center(
         child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: Constants.categoryImages.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  context.pushNamed(
-                      AppRouteConstants.categoryproductsScreenRoute.name,
-                      pathParameters: {
-                        'category': Constants.categoryImages[index]['title']!
-                      });
-                },
-                child: SingleTopCategoryItem(
-                  title: Constants.categoryImages[index]['title']!,
-                  image: Constants.categoryImages[index]['image']!,
-                ),
-              );
-            }),
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          itemCount: Constants.categoryImages.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                context.pushNamed(
+                  AppRouteConstants.categoryproductsScreenRoute.name,
+                  pathParameters: {
+                    'category': Constants.categoryImages[index]['title']!
+                  },
+                );
+              },
+              child: SingleTopCategoryItem(
+                title: Constants.categoryImages[index]['title']!,
+                image: Constants.categoryImages[index]['image']!,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

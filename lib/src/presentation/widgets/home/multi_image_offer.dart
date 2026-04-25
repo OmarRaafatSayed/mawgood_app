@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone_bloc/src/config/router/app_route_constants.dart';
-import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 class MultiImageOffer extends StatelessWidget {
@@ -20,83 +20,106 @@ class MultiImageOffer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void goToCateogryDealsScreen() {
-      context.pushNamed(AppRouteConstants.categoryproductsScreenRoute.name,
-          pathParameters: {'category': category});
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    void goToCategoryDealsScreen() {
+      context.pushNamed(
+        AppRouteConstants.categoryproductsScreenRoute.name,
+        pathParameters: {'category': category},
+      );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           child: Text(
             title,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
         ),
         Container(
-          height: 500,
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(5)),
-          // width: MediaQuery.sizeOf(context).width,
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: theme.colorScheme.outlineVariant),
+            boxShadow: [
+              BoxShadow(
+                color: theme.shadowColor.withOpacity(0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 460,
-                child: GridView.builder(
-                  itemCount: images.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      mainAxisExtent: 230, crossAxisCount: 2),
-                  itemBuilder: ((context, index) {
-                    return InkWell(
-                      onTap: () => goToCateogryDealsScreen(),
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 6, right: 6, top: 6),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: CachedNetworkImage(
-                                  imageUrl: images[index],
-                                  fit: BoxFit.fill,
-                                  width: MediaQuery.sizeOf(context).width,
-                                  height: MediaQuery.sizeOf(context).height,
-                                  placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator()),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+              GridView.builder(
+                shrinkWrap: true,
+                itemCount: images.length,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  mainAxisExtent: 200,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: goToCategoryDealsScreen,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: CachedNetworkImage(
+                              imageUrl: images[index],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              placeholder: (context, url) => Container(
+                                color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
                                 ),
                               ),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                labels[index],
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  }),
-                ),
+                        const SizedBox(height: 8),
+                        Text(
+                          labels[index],
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, left: 8),
-                child: GestureDetector(
-                  onTap: () => goToCateogryDealsScreen(),
-                  child: Text(
-                    'See all offers',
-                    style: TextStyle(color: Constants.selectedNavBarColor),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: goToCategoryDealsScreen,
+                child: Text(
+                  l10n.seeAllOffers,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               )

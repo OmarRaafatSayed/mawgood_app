@@ -6,7 +6,7 @@ import 'package:flutter_amazon_clone_bloc/src/logic/blocs/cart/cart_offers_cubit
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/cart/cart_offers_cubit2/cart_offers_cubit.dart';
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/cart/cart_offers_cubit3/cart_offers_cubit.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/cart/add_to_card_offer.dart';
-import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/cart/amazon_pay_bannar_ad.dart';
+import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/cart/mawgood_pay_banner_ad.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/cart/cart_icon.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/cart/cart_product.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/cart/save_for_later_single.dart';
@@ -14,9 +14,9 @@ import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/cart/swipe_co
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/custom_app_bar.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/custom_elevated_button.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/divider_with_sizedbox.dart';
-import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 class CartScreen extends StatelessWidget {
@@ -25,6 +25,7 @@ class CartScreen extends StatelessWidget {
   Future<void> getCartOffers(BuildContext context) async {
     List<String> categories =
         await BlocProvider.of<CartOffersCubit1>(context).setOfferCategories();
+    if (!context.mounted) return;
     BlocProvider.of<CartOffersCubit1>(context)
         .cartOffers1(category: categories[0]);
     BlocProvider.of<CartOffersCubit2>(context)
@@ -35,8 +36,12 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    
     context.read<CartBloc>().add(GetCartPressed());
     getCartOffers(context);
+
     return Scaffold(
       appBar: const PreferredSize(
           preferredSize: Size.fromHeight(60), child: CustomAppBar()),
@@ -46,371 +51,55 @@ class CartScreen extends StatelessWidget {
             BlocConsumer<CartBloc, CartState>(
               listener: (context, state) {
                 if (state is CartProductErrorS) {
-                  return showSnackBar(context, state.errorString);
+                  showSnackBar(context, state.errorString);
                 }
               },
               builder: (context, state) {
                 if (state is CartLoadingS) {
                   return SizedBox(
                     height: MediaQuery.sizeOf(context).height - 180,
-                    width: MediaQuery.sizeOf(context).width,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: const Center(child: CircularProgressIndicator()),
                   );
                 }
 
                 if (state is CartProductSuccessS) {
                   return Column(
                     children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12)
-                                .copyWith(top: 20),
-                            child: state.cartProducts.isEmpty
-                                ? SizedBox(
-                                    height: 200,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        ClipOval(
-                                          child: Image.asset(
-                                            'assets/images/empty_cart.png',
-                                            height: 180,
-                                            width: 180,
-                                          ),
-                                        ),
-                                        const Text('Your Amazon Cart is empty')
-                                      ],
-                                    ),
-                                  )
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          const Text(
-                                            'SubTotal ',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.normal,
-                                                color: Colors.black87),
-                                          ),
-                                          const Text(
-                                            '₹',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                          Text(
-                                            formatPriceWithDecimal(state.total),
-                                            style: const TextStyle(
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black87),
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Text(
-                                            'EMI Available ',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black54),
-                                          ),
-                                          Text(
-                                            'Details',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Constants
-                                                    .selectedNavBarColor),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.check_circle,
-                                            color: Constants.greenColor,
-                                            size: 25,
-                                          ),
-                                          const SizedBox(width: 6),
-                                          Expanded(
-                                            child: RichText(
-                                                text: TextSpan(
-                                                    text:
-                                                        'Your order is eligible for FREE Delivery. ',
-                                                    style: const TextStyle(
-                                                        fontSize: 14,
-                                                        color: Constants
-                                                            .greenColor,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    children: [
-                                                  const TextSpan(
-                                                    text:
-                                                        'Select this option at checkout. ',
-                                                    style: TextStyle(
-                                                        height: 1.4,
-                                                        fontSize: 14,
-                                                        color: Colors.black54,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  ),
-                                                  TextSpan(
-                                                    text: 'Details ',
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Constants
-                                                            .selectedNavBarColor,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  )
-                                                ])),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      CustomElevatedButton(
-                                        buttonText: state.cartProducts.length ==
-                                                1
-                                            ? 'Proceed to Buy (${state.cartProducts.length} item)'
-                                            : 'Proceed to Buy (${state.cartProducts.length} items)',
-                                        onPressed: () {
-                                          context.pushNamed(
-                                              AppRouteConstants
-                                                  .paymentScreenRoute.name,
-                                              extra: state.total);
-                                        },
-                                        isRectangle: true,
-                                      ),
-                                      const DividerWithSizedBox(
-                                        thickness: 0.5,
-                                        sB1Height: 20,
-                                      )
-                                    ],
-                                  ),
-                          ),
-                          Visibility(
-                            visible: state.cartProducts.isNotEmpty,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemCount: state.cartProducts.length,
-                              itemBuilder: ((context, index) {
-                                final product = state.cartProducts[index];
-                                final quantity = state.productsQuantity[index];
-
-                                return Dismissible(
-                                    movementDuration:
-                                        const Duration(milliseconds: 100),
-                                    onDismissed: (DismissDirection direction) {
-                                      if (direction ==
-                                          DismissDirection.startToEnd) {
-                                        context.read<CartBloc>().add(
-                                            DeleteFromCart(product: product));
-                                        showSnackBar(context, 'Deleted!');
-                                        // deleteProduct(product);
-                                      } else if (direction ==
-                                          DismissDirection.endToStart) {
-                                        context.read<CartBloc>().add(
-                                            SaveForLaterE(product: product));
-                                        showSnackBar(
-                                            context, 'Saved for later!');
-                                      }
-                                    },
-                                    background: const SwipeContainer(
-                                      isDelete: true,
-                                      secondaryBackgroundText: 'Save for later',
-                                    ),
-                                    secondaryBackground: const SwipeContainer(
-                                      isDelete: false,
-                                      secondaryBackgroundText: 'Save for later',
-                                    ),
-                                    key: UniqueKey(),
-                                    child: InkWell(
-                                      onTap: () {
-                                        context.pushNamed(
-                                            AppRouteConstants
-                                                .productDetailsScreenRoute.name,
-                                            extra: {
-                                              "product": product,
-                                              "deliveryDate": getDeliveryDate(),
-                                            });
-                                      },
-                                      child: CartProduct(
-                                        quantity: quantity,
-                                        product: product,
-                                      ),
-                                    ));
-                              }),
-                            ),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: state.cartProducts.isEmpty
+                            ? _buildEmptyCart(context, l10n, theme)
+                            : _buildCartContent(context, state, l10n, theme),
                       ),
+                      if (state.cartProducts.isNotEmpty)
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: state.cartProducts.length,
+                          itemBuilder: (context, index) {
+                            final product = state.cartProducts[index];
+                            final quantity = state.productsQuantity[index];
+                            return _buildCartItem(context, product, quantity, theme);
+                          },
+                        ),
                       const DividerWithSizedBox(),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          CartIcon(
-                            iconName: 'secure_payment.png',
-                            title: 'Secure Payment',
-                          ),
-                          CartIcon(
-                            iconName: 'delivered_alt.png',
-                            title: 'Amazon Delivered',
-                          ),
+                          const CartIcon(iconName: 'secure_payment.png', title: 'Secure Payment'),
+                          CartIcon(iconName: 'delivered_alt.png', title: l10n.appDelivered),
                         ],
                       ),
-                      const SizedBox(height: 15),
-                      const AmazonPayBannarAd(),
-                      const SizedBox(height: 15),
-                      state.saveForLaterProducts.isEmpty
-                          ? const SizedBox()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.all(4),
-                                  color: const Color(0xffE9EDEE),
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 12),
-                                  child: Text(
-                                    state.saveForLaterProducts.length == 1
-                                        ? 'Saved for later (${state.saveForLaterProducts.length} item)'
-                                        : 'Saved for later (${state.saveForLaterProducts.length} items)',
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.vertical,
-                                    itemCount:
-                                        state.saveForLaterProducts.length,
-                                    itemBuilder: ((context, index) {
-                                      final product =
-                                          state.saveForLaterProducts[index];
-                                      return Dismissible(
-                                        movementDuration:
-                                            const Duration(milliseconds: 100),
-                                        onDismissed:
-                                            (DismissDirection direction) {
-                                          if (direction ==
-                                              DismissDirection.startToEnd) {
-                                            context.read<CartBloc>().add(
-                                                DeleteFromLaterE(
-                                                    product: product));
-                                          } else if (direction ==
-                                              DismissDirection.endToStart) {
-                                            context.read<CartBloc>().add(
-                                                MoveToCartE(product: product));
-                                          }
-                                        },
-                                        key: UniqueKey(),
-                                        background: const SwipeContainer(
-                                            isDelete: true,
-                                            secondaryBackgroundText:
-                                                'Move to cart'),
-                                        secondaryBackground:
-                                            const SwipeContainer(
-                                                isDelete: false,
-                                                secondaryBackgroundText:
-                                                    'Move to cart'),
-                                        child: InkWell(
-                                          onTap: () {
-                                            context.pushNamed(
-                                                AppRouteConstants
-                                                    .productDetailsScreenRoute
-                                                    .name,
-                                                extra: {
-                                                  "product": product,
-                                                  "deliveryDate":
-                                                      getDeliveryDate(),
-                                                });
-                                          },
-                                          child: SaveForLaterSingle(
-                                            product: product,
-                                          ),
-                                        ),
-                                      );
-                                    }))
-                              ],
-                            ),
-                      const SizedBox(height: 15),
-                      BlocBuilder<CartOffersCubit1, CartOffersState1>(
-                          builder: (context, state) {
-                        if (state is CartOffersSuccessS1) {
-                          return state.productList.isEmpty
-                              ? const SizedBox()
-                              : AddToCartWidget(
-                                  title: 'Top picks for you',
-                                  isTitleLong: false,
-                                  productList: state.productList,
-                                  averageRating: state.averageRatingList,
-                                );
-                        }
-                        return const SizedBox();
-                      }),
-                      BlocBuilder<CartOffersCubit2, CartOffersState2>(
-                          builder: (context, state) {
-                        if (state is CartOffersSuccessS2) {
-                          return state.productList.isEmpty
-                              ? const SizedBox()
-                              : AddToCartWidget(
-                                  title:
-                                      'Frequently viewed with items in your cart',
-                                  isTitleLong: true,
-                                  productList: state.productList,
-                                  averageRating: state.averageRatingList,
-                                );
-                        }
-                        return const SizedBox();
-                      }),
-                      BlocBuilder<CartOffersCubit3, CartOffersState3>(
-                          builder: (context, state) {
-                        if (state is CartOffersSuccessS3) {
-                          return state.productList.isEmpty
-                              ? const SizedBox()
-                              : AddToCartWidget(
-                                  title: 'Recommendations for you',
-                                  isTitleLong: false,
-                                  productList: state.productList,
-                                  averageRating: state.averageRatingList,
-                                );
-                        }
-                        return const SizedBox();
-                      }),
+                      const SizedBox(height: 16),
+                      const MawgoodPayBannerAd(),
+                      if (state.saveForLaterProducts.isNotEmpty)
+                        _buildSaveForLater(context, state, l10n, theme),
+                      const SizedBox(height: 16),
+                      _buildRecommendations(context, l10n, theme),
                     ],
                   );
                 }
-
-                return SizedBox(
-                  height: MediaQuery.sizeOf(context).height - 180,
-                  width: MediaQuery.sizeOf(context).width,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+                return const SizedBox();
               },
             ),
           ],
@@ -418,16 +107,152 @@ class CartScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildEmptyCart(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+    return SizedBox(
+      height: 200,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ClipOval(
+            child: Image.asset(
+              'assets/images/empty_cart.png',
+              height: 150,
+              width: 150,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Text(
+            l10n.cartEmpty,
+            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCartContent(BuildContext context, CartProductSuccessS state, AppLocalizations l10n, ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text('SubTotal ', style: theme.textTheme.titleLarge),
+            Text('₹', style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.primary)),
+            Text(
+              formatPriceWithDecimal(state.total),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 12),
+        CustomElevatedButton(
+          buttonText: 'Proceed to Buy (${state.cartProducts.length} ${state.cartProducts.length == 1 ? 'item' : 'items'})',
+          onPressed: () {
+            context.pushNamed(AppRouteConstants.paymentScreenRoute.name, extra: state.total);
+          },
+          isRectangle: true,
+        ),
+        const DividerWithSizedBox(thickness: 0.5, sB1Height: 20),
+      ],
+    );
+  }
+
+  Widget _buildCartItem(BuildContext context, Product product, int quantity, ThemeData theme) {
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        if (direction == DismissDirection.startToEnd) {
+          context.read<CartBloc>().add(DeleteFromCart(product: product));
+          showSnackBar(context, 'Deleted!');
+        } else {
+          context.read<CartBloc>().add(SaveForLaterE(product: product));
+          showSnackBar(context, 'Saved for later!');
+        }
+      },
+      background: const SwipeContainer(isDelete: true, secondaryBackgroundText: 'Save for later'),
+      secondaryBackground: const SwipeContainer(isDelete: false, secondaryBackgroundText: 'Save for later'),
+      child: InkWell(
+        onTap: () => context.pushNamed(AppRouteConstants.productDetailsScreenRoute.name, extra: {
+          "product": product,
+          "deliveryDate": getDeliveryDate(),
+        }),
+        child: CartProduct(quantity: quantity, product: product),
+      ),
+    );
+  }
+
+  Widget _buildSaveForLater(BuildContext context, CartProductSuccessS state, AppLocalizations l10n, ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(margin: const EdgeInsets.symmetric(vertical: 16), color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3), height: 12),
+        Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Text(
+            'Saved for later (${state.saveForLaterProducts.length} ${state.saveForLaterProducts.length == 1 ? 'item' : 'items'})',
+            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: state.saveForLaterProducts.length,
+          itemBuilder: (context, index) {
+            final product = state.saveForLaterProducts[index];
+            return Dismissible(
+              key: UniqueKey(),
+              onDismissed: (direction) {
+                if (direction == DismissDirection.startToEnd) {
+                  context.read<CartBloc>().add(DeleteFromLaterE(product: product));
+                } else {
+                  context.read<CartBloc>().add(MoveToCartE(product: product));
+                }
+              },
+              background: const SwipeContainer(isDelete: true, secondaryBackgroundText: 'Move to cart'),
+              secondaryBackground: const SwipeContainer(isDelete: false, secondaryBackgroundText: 'Move to cart'),
+              child: InkWell(
+                onTap: () => context.pushNamed(AppRouteConstants.productDetailsScreenRoute.name, extra: {
+                  "product": product,
+                  "deliveryDate": getDeliveryDate(),
+                }),
+                child: SaveForLaterSingle(product: product),
+              ),
+            );
+          },
+        )
+      ],
+    );
+  }
+
+  Widget _buildRecommendations(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+    return Column(
+      children: [
+        BlocBuilder<CartOffersCubit1, CartOffersState1>(
+          builder: (context, state) => state is CartOffersSuccessS1 && state.productList.isNotEmpty
+              ? AddToCartWidget(title: 'Top picks for you', isTitleLong: false, productList: state.productList, averageRating: state.averageRatingList)
+              : const SizedBox(),
+        ),
+        BlocBuilder<CartOffersCubit2, CartOffersState2>(
+          builder: (context, state) => state is CartOffersSuccessS2 && state.productList.isNotEmpty
+              ? AddToCartWidget(title: 'Frequently viewed together', isTitleLong: true, productList: state.productList, averageRating: state.averageRatingList)
+              : const SizedBox(),
+        ),
+        BlocBuilder<CartOffersCubit3, CartOffersState3>(
+          builder: (context, state) => state is CartOffersSuccessS3 && state.productList.isNotEmpty
+              ? AddToCartWidget(title: 'Recommendations for you', isTitleLong: false, productList: state.productList, averageRating: state.averageRatingList)
+              : const SizedBox(),
+        ),
+      ],
+    );
+  }
 }
 
 class AddToCartWidget extends StatelessWidget {
-  const AddToCartWidget(
-      {super.key,
-      required this.productList,
-      required this.averageRating,
-      required this.title,
-      required this.isTitleLong});
-
+  const AddToCartWidget({super.key, required this.productList, required this.averageRating, required this.title, required this.isTitleLong});
   final List<Product>? productList;
   final List<double>? averageRating;
   final String title;
@@ -435,37 +260,26 @@ class AddToCartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12).copyWith(top: 18),
-      width: MediaQuery.sizeOf(context).height,
-      color: const Color(0xffE9EDEE),
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14).copyWith(top: 12),
-        color: Colors.white,
-        height: isTitleLong ? 370 : 340,
+        padding: const EdgeInsets.all(16),
+        color: theme.colorScheme.surface,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 6),
+            Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
             SizedBox(
-              height: 290,
-              child: ListView.builder(
-                  // shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount:
-                      productList!.length > 20 ? 20 : productList!.length,
-                  itemBuilder: ((context, index) {
-                    Product product = productList![index];
-
-                    return AddToCartOffer(
-                      product: product,
-                      averageRating: averageRating![index],
-                    );
-                  })),
+              height: 300,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: productList!.length > 20 ? 20 : productList!.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
+                itemBuilder: (context, index) => AddToCartOffer(product: productList![index], averageRating: averageRating![index]),
+              ),
             ),
           ],
         ),

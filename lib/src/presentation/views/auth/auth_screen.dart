@@ -5,12 +5,10 @@ import 'package:flutter_amazon_clone_bloc/src/logic/blocs/auth_bloc/radio_bloc/r
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/user_cubit/user_cubit.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/custom_elevated_button.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/custom_textfield.dart';
-import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-// enum Auth { signIn, signUp }
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -20,7 +18,6 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  // Auth _auth = Auth.signUp;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();
 
@@ -30,59 +27,54 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     context.read<RadioBloc>().add(const RadioChangedEvent(auth: Auth.signUp));
 
     return Scaffold(
-      backgroundColor: Constants.greyBackgroundColor,
+      backgroundColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Image.asset(
-                  'assets/images/amazon_in.png',
-                  height: 40,
-                  width: 50,
+                  'assets/images/mawgood/logo.jpg',
+                  height: 60,
+                  fit: BoxFit.contain,
                 ),
-                const SizedBox.square(
-                  dimension: 12,
+                const SizedBox(height: 24),
+                Text(
+                  l10n.welcome,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                const Text(
-                  'Welcome',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
-                ),
-                const SizedBox.square(
-                  dimension: 12,
-                ),
-
-                // Sign Up Section
+                const SizedBox(height: 24),
 
                 BlocBuilder<RadioBloc, RadioState>(
                   builder: (context, state) {
                     if (state is RadioSignUpState) {
                       return Column(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.only(
-                                bottom: 10, right: 8, left: 8),
-                            decoration: BoxDecoration(
-                              color: Constants.backgroundColor,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
+                          _buildAuthContainer(
+                            context,
                             child: Column(
                               children: [
                                 ListTile(
-                                  minLeadingWidth: 2,
                                   leading: Radio<Auth>(
                                     value: Auth.signUp,
                                     groupValue: state.auth,
@@ -91,194 +83,86 @@ class _AuthScreenState extends State<AuthScreen> {
                                           RadioChangedEvent(auth: val!));
                                     },
                                   ),
-                                  title: RichText(
-                                    text: const TextSpan(children: [
-                                      TextSpan(
-                                        text: 'Create account. ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                            color: Colors.black),
-                                      ),
-                                      TextSpan(
-                                        text: 'New to Amazon?',
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.black87),
-                                      )
-                                    ]),
+                                  title: Text(
+                                    l10n.createAccount,
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
+                                  subtitle: Text(l10n.newToApp),
                                   onTap: () {
                                     context.read<RadioBloc>().add(
-                                        const RadioChangedEvent(
-                                            auth: Auth.signUp));
+                                        const RadioChangedEvent(auth: Auth.signUp));
                                   },
                                 ),
                                 Form(
                                   key: _signUpFormKey,
-                                  child: Column(children: [
-                                    CustomTextfield(
-                                      controller: _nameController,
-                                      hintText: 'First and last name',
-                                      onChanged: (value) {
-                                        context.read<AuthBloc>().add(
-                                            TextFieldChangedEvent(
-                                                _nameController.text,
-                                                _emailController.text,
-                                                _passwordController.text));
-                                      },
-                                    ),
-                                    CustomTextfield(
-                                      controller: _emailController,
-                                      hintText: 'Email',
-                                      onChanged: (value) {
-                                        context.read<AuthBloc>().add(
-                                            TextFieldChangedEvent(
-                                                _nameController.text,
-                                                _emailController.text,
-                                                _passwordController.text));
-                                      },
-                                    ),
-                                    CustomTextfield(
-                                      controller: _passwordController,
-                                      hintText: 'Set password',
-                                      onChanged: (value) {
-                                        context.read<AuthBloc>().add(
-                                            TextFieldChangedEvent(
-                                                _nameController.text,
-                                                _emailController.text,
-                                                _passwordController.text));
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    BlocBuilder<AuthBloc, AuthState>(
-                                      builder: (context, state) {
-                                        if (state is TextFieldErrorState) {
-                                          return Row(
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/info_icon.png',
-                                                height: 15,
-                                                width: 15,
-                                              ),
-                                              Text('  ${state.errorString}')
-                                            ],
-                                          );
-                                        } else {
-                                          if (_nameController.text == '' ||
-                                              _emailController.text == '' ||
-                                              _passwordController.text == '') {
-                                            return Row(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/images/info_icon.png',
-                                                  height: 15,
-                                                  width: 15,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      children: [
+                                        CustomTextfield(
+                                          controller: _nameController,
+                                          hintText: l10n.name,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        CustomTextfield(
+                                          controller: _emailController,
+                                          hintText: l10n.email,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        CustomTextfield(
+                                          controller: _passwordController,
+                                          hintText: l10n.setPassword,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        BlocBuilder<AuthBloc, AuthState>(
+                                          builder: (context, state) {
+                                            if (state is TextFieldErrorState) {
+                                              return _buildErrorRow(state.errorString);
+                                            }
+                                            return const SizedBox();
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        _buildSubmitButton(
+                                          context,
+                                          text: l10n.createAccount,
+                                          onPressed: () {
+                                            if (_signUpFormKey.currentState!.validate()) {
+                                              context.read<AuthBloc>().add(
+                                                CreateAccountPressedEvent(
+                                                  _nameController.text,
+                                                  _emailController.text,
+                                                  _passwordController.text,
                                                 ),
-                                                const Text(
-                                                    '  All fields are required.'),
-                                              ],
-                                            );
-                                          }
-                                          return const SizedBox();
-                                        }
-                                      },
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox.square(
-                                      dimension: 15,
-                                    ),
-                                    BlocConsumer<AuthBloc, AuthState>(
-                                      listener: (context, state) {
-                                        if (state is AuthErrorState) {
-                                          debugPrint(state.errorString);
-                                          showSnackBar(
-                                              context, state.errorString);
-                                        }
-                                        if (state is CreateUserSuccessState) {
-                                          showSnackBar(
-                                              context, state.userCreatedString);
-                                        }
-                                        if (state is CreateUserErrorState) {
-                                          showSnackBar(
-                                              context, state.errorString);
-                                        }
-                                      },
-                                      builder: (context, state) {
-                                        if (state is AuthLoadingState) {
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        } else {
-                                          return CustomElevatedButton(
-                                            buttonText: 'Create account',
-                                            onPressed: () {
-                                              if (_signUpFormKey.currentState!
-                                                  .validate()) {
-                                                // signUpUser();
-                                                BlocProvider.of<AuthBloc>(
-                                                        context)
-                                                    .add(
-                                                        CreateAccountPressedEvent(
-                                                            _nameController
-                                                                .text,
-                                                            _emailController
-                                                                .text,
-                                                            _passwordController
-                                                                .text));
-                                              }
-                                            },
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ]),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                bottom: 10, right: 8, left: 8),
-                            decoration: BoxDecoration(
-                                color: Constants.greyBackgroundColor,
-                                borderRadius: BorderRadius.circular(6)),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  minLeadingWidth: 2,
-                                  leading: Radio<Auth>(
-                                      value: Auth.signIn,
-                                      groupValue: state.auth,
-                                      onChanged: (Auth? val) {
-                                        context.read<RadioBloc>().add(
-                                            RadioChangedEvent(auth: val!));
-                                      }),
-                                  title: RichText(
-                                    text: const TextSpan(children: [
-                                      TextSpan(
-                                        text: 'Sign in. ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                            color: Colors.black),
-                                      ),
-                                      TextSpan(
-                                        text: 'Already a customer?',
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.black87),
-                                      ),
-                                    ]),
-                                  ),
-                                  onTap: () {
-                                    context.read<RadioBloc>().add(
-                                        const RadioChangedEvent(
-                                            auth: Auth.signIn));
-                                  },
-                                ),
-                              ],
+                          const SizedBox(height: 12),
+                          _buildInactiveContainer(
+                            context,
+                            child: ListTile(
+                              leading: Radio<Auth>(
+                                value: Auth.signIn,
+                                groupValue: state.auth,
+                                onChanged: (Auth? val) {
+                                  context.read<RadioBloc>().add(
+                                      RadioChangedEvent(auth: val!));
+                                },
+                              ),
+                              title: Text(l10n.signIn),
+                              subtitle: Text(l10n.alreadyACustomer),
+                              onTap: () {
+                                context.read<RadioBloc>().add(
+                                    const RadioChangedEvent(auth: Auth.signIn));
+                              },
                             ),
                           ),
                         ],
@@ -287,147 +171,96 @@ class _AuthScreenState extends State<AuthScreen> {
                     if (state is RadioSignInState) {
                       return Column(
                         children: [
-                          Container(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, right: 8, left: 8),
-                              decoration: BoxDecoration(
-                                color: Constants.greyBackgroundColor,
-                                borderRadius: BorderRadius.circular(6),
+                          _buildInactiveContainer(
+                            context,
+                            child: ListTile(
+                              leading: Radio<Auth>(
+                                value: Auth.signUp,
+                                groupValue: state.auth,
+                                onChanged: (Auth? val) {
+                                  context.read<RadioBloc>().add(
+                                      RadioChangedEvent(auth: val!));
+                                },
                               ),
-                              child: Column(children: [
-                                ListTile(
-                                  minLeadingWidth: 2,
-                                  leading: Radio<Auth>(
-                                      value: Auth.signUp,
-                                      groupValue: state.auth,
-                                      onChanged: (Auth? val) {
-                                        context.read<RadioBloc>().add(
-                                            RadioChangedEvent(auth: val!));
-                                      }),
-                                  title: RichText(
-                                    text: const TextSpan(children: [
-                                      TextSpan(
-                                        text: 'Create account. ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                            color: Colors.black),
-                                      ),
-                                      TextSpan(
-                                        text: 'New to Amazon?',
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.black87),
-                                      )
-                                    ]),
-                                  ),
-                                  onTap: () {
-                                    context.read<RadioBloc>().add(
-                                        const RadioChangedEvent(
-                                            auth: Auth.signUp));
-                                  },
-                                ),
-                              ])),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                bottom: 10, right: 8, left: 8),
-                            decoration: BoxDecoration(
-                                color: Constants.backgroundColor,
-                                borderRadius: BorderRadius.circular(6)),
+                              title: Text(l10n.createAccount),
+                              subtitle: Text(l10n.newToApp),
+                              onTap: () {
+                                context.read<RadioBloc>().add(
+                                    const RadioChangedEvent(auth: Auth.signUp));
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildAuthContainer(
+                            context,
                             child: Column(
                               children: [
                                 ListTile(
-                                  minLeadingWidth: 2,
                                   leading: Radio<Auth>(
-                                      value: Auth.signIn,
-                                      groupValue: state.auth,
-                                      onChanged: (Auth? val) {
-                                        context.read<RadioBloc>().add(
-                                            RadioChangedEvent(auth: val!));
-                                      }),
-                                  title: RichText(
-                                    text: const TextSpan(children: [
-                                      TextSpan(
-                                        text: 'Sign in. ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                            color: Colors.black),
-                                      ),
-                                      TextSpan(
-                                        text: 'Already a customer?',
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.black87),
-                                      ),
-                                    ]),
+                                    value: Auth.signIn,
+                                    groupValue: state.auth,
+                                    onChanged: (Auth? val) {
+                                      context.read<RadioBloc>().add(
+                                          RadioChangedEvent(auth: val!));
+                                    },
                                   ),
+                                  title: Text(
+                                    l10n.signIn,
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text(l10n.alreadyACustomer),
                                   onTap: () {
                                     context.read<RadioBloc>().add(
-                                        const RadioChangedEvent(
-                                            auth: Auth.signIn));
+                                        const RadioChangedEvent(auth: Auth.signIn));
                                   },
                                 ),
                                 Form(
                                   key: _signInFormKey,
-                                  child: Column(
-                                    children: [
-                                      CustomTextfield(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      children: [
+                                        CustomTextfield(
                                           controller: _emailController,
-                                          hintText: 'Email'),
-                                      CustomTextfield(
+                                          hintText: l10n.email,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        CustomTextfield(
                                           controller: _passwordController,
-                                          hintText: 'Password'),
-                                      const SizedBox.square(
-                                        dimension: 6,
-                                      ),
-                                      BlocConsumer<AuthBloc, AuthState>(
-                                        listener: (context, state) {
-                                          if (state is AuthErrorState) {
-                                            showSnackBar(
-                                                context, state.errorString);
-                                          }
-                                          if (state is SignInSuccessState) {
-                                            BlocProvider.of<UserCubit>(context)
-                                                .getUserData();
-                                            if (state.user.type == 'user') {
-                                              context.goNamed(AppRouteConstants
-                                                  .bottomBarRoute.name);
-                                            } else {
-                                              context.goNamed(AppRouteConstants
-                                                  .adminBottomBarRoute.name);
+                                          hintText: l10n.password,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        _buildSubmitButton(
+                                          context,
+                                          text: l10n.continueText,
+                                          onPressed: () {
+                                            if (_signInFormKey.currentState!.validate()) {
+                                              context.read<AuthBloc>().add(
+                                                SignInPressedEvent(
+                                                  _emailController.text,
+                                                  _passwordController.text,
+                                                ),
+                                              );
                                             }
-                                          }
-                                          if (state is UpdateUserData) {
-                                            BlocProvider.of<UserCubit>(context)
-                                                .setUser(state.user);
-                                          }
-                                        },
-                                        builder: (context, state) {
-                                          if (state is AuthLoadingState) {
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          } else {
-                                            return CustomElevatedButton(
-                                              buttonText: 'Continue',
-                                              onPressed: () {
-                                                if (_signInFormKey.currentState!
-                                                    .validate()) {
-                                                  BlocProvider.of<AuthBloc>(
-                                                          context)
-                                                      .add(SignInPressedEvent(
-                                                          _emailController.text,
-                                                          _passwordController
-                                                              .text));
-                                                }
-                                              },
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ],
+                                          },
+                                        ),
+                                        const SizedBox(height: 12),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: OutlinedButton(
+                                            style: OutlinedButton.styleFrom(
+                                              padding: const EdgeInsets.symmetric(vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(25),
+                                              ),
+                                            ),
+                                            onPressed: () => context.goNamed(
+                                                AppRouteConstants.bottomBarRoute.name),
+                                            child: Text(l10n.continueAsGuest),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -436,35 +269,26 @@ class _AuthScreenState extends State<AuthScreen> {
                         ],
                       );
                     }
-
                     return const SizedBox();
                   },
                 ),
 
-                const SizedBox.square(
-                  dimension: 20,
-                ),
-                Divider(
-                  color: Colors.grey.shade300,
-                  indent: 20,
-                  endIndent: 20,
-                  thickness: 0.5,
-                ),
+                const SizedBox(height: 32),
+                const Divider(),
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      customTextButton(buttonText: 'Conditions of Use'),
-                      customTextButton(buttonText: 'Privacy Notice'),
-                      customTextButton(buttonText: 'Help'),
-                    ]),
-                const Center(
-                  child: Text(
-                    '© 1996-2023, Amazon.com, Inc. or its affiliates',
-                    style: TextStyle(fontSize: 12),
-                  ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildFooterLink(context, l10n.conditionsOfUse),
+                    _buildFooterLink(context, l10n.privacyNotice),
+                    _buildFooterLink(context, l10n.help),
+                  ],
                 ),
-                const SizedBox.square(
-                  dimension: 20,
+                const SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    l10n.copyright,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ),
               ],
             ),
@@ -474,13 +298,73 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  TextButton customTextButton({String? buttonText}) {
+  Widget _buildAuthContainer(BuildContext context, {required Widget child}) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: theme.colorScheme.primary.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildInactiveContainer(BuildContext context, {required Widget child}) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildErrorRow(String error) {
+    return Row(
+      children: [
+        const Icon(Icons.info_outline, size: 16, color: Colors.red),
+        const SizedBox(width: 8),
+        Expanded(child: Text(error, style: const TextStyle(color: Colors.red, fontSize: 13))),
+      ],
+    );
+  }
+
+  Widget _buildSubmitButton(BuildContext context, {required String text, required VoidCallback onPressed}) {
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthErrorState) showSnackBar(context, state.errorString);
+        if (state is CreateUserSuccessState) showSnackBar(context, state.userCreatedString);
+        if (state is SignInSuccessState) {
+          context.read<UserCubit>().getUserData();
+          if (state.user.type == 'user') {
+            context.goNamed(AppRouteConstants.bottomBarRoute.name);
+          } else {
+            context.goNamed(AppRouteConstants.adminBottomBarRoute.name);
+          }
+        }
+      },
+      builder: (context, state) {
+        if (state is AuthLoadingState) return const Center(child: CircularProgressIndicator());
+        return CustomElevatedButton(buttonText: text, onPressed: onPressed);
+      },
+    );
+  }
+
+  Widget _buildFooterLink(BuildContext context, String text) {
+    final theme = Theme.of(context);
     return TextButton(
       onPressed: () {},
-      child: Text(
-        buttonText!,
-        style: const TextStyle(color: Color(0xff1F72C5), fontSize: 15),
-      ),
+      child: Text(text, style: TextStyle(color: theme.colorScheme.primary, fontSize: 13)),
     );
   }
 }

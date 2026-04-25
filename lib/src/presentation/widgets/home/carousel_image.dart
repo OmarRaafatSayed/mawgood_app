@@ -3,31 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/home_blocs/carousel_bloc/carousel_image_bloc.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'bottom_offers.dart';
 import 'custom_carousel_slider.dart';
 import 'dots_indicator.dart';
 
 class CarouselImage extends StatelessWidget {
-  CarouselImage({super.key});
-
-  final CarouselSliderController _controller = CarouselSliderController();
+  const CarouselImage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final CarouselSliderController controller = CarouselSliderController();
     return BlocBuilder<CarouselImageBloc, CarouselImageState>(
       builder: (context, state) {
+        int index = 0;
         if (state is CarouselImageChangeState) {
-          return CarouselImageWidget(
-            controller: _controller,
-            index: state.index,
-          );
-        } else {
-          return CarouselImageWidget(
-            controller: _controller,
-            index: 0,
-          );
+          index = state.index;
         }
+        return CarouselImageWidget(
+          controller: controller,
+          index: index,
+        );
       },
     );
   }
@@ -45,42 +40,49 @@ class CarouselImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+
     return Stack(
       children: [
         CustomCarouselSliderMap(
-            sliderImages: Constants.carouselImages,
-            onPageChanged: (index, reason) {
-              BlocProvider.of<CarouselImageBloc>(context)
-                  .add(CarouselImageChangedEvent(index: index));
-            }),
+          sliderImages: Constants.carouselImages,
+          onPageChanged: (index, reason) {
+            context.read<CarouselImageBloc>().add(CarouselImageChangedEvent(index: index));
+          },
+        ),
         Positioned(
-          top: 245,
-          left: MediaQuery.sizeOf(context).width / 3.3,
-          child: DotsIndicatorMap(
-            controller: _controller,
-            current: index,
-            sliderImages: Constants.carouselImages,
+          bottom: 25,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: DotsIndicatorMap(
+              controller: _controller,
+              current: index,
+              sliderImages: Constants.carouselImages,
+            ),
           ),
         ),
         Positioned(
-            bottom: 0,
-            child: Container(
-              height: 180,
-              width: MediaQuery.sizeOf(context).width,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white.withAlpha(26),
-                    Colors.white.withAlpha(77),
-                    Colors.white.withAlpha(242),
-                    Colors.white,
-                  ],
-                  stops: const [0, 0.1, 0.4, 0.6],
-                ),
+          bottom: 0,
+          child: Container(
+            height: 150,
+            width: width,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  theme.colorScheme.surface.withOpacity(0),
+                  theme.colorScheme.surface.withOpacity(0.4),
+                  theme.colorScheme.surface.withOpacity(0.8),
+                  theme.colorScheme.surface,
+                ],
+                stops: const [0, 0.3, 0.7, 1],
               ),
-            )),
+            ),
+          ),
+        ),
         const Positioned(
           bottom: 0,
           child: BottomOffers(),

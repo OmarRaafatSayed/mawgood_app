@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 import 'package:flutter_amazon_clone_bloc/src/config/router/router.dart';
 import 'package:flutter_amazon_clone_bloc/src/config/themes/app_theme.dart';
 import 'package:flutter_amazon_clone_bloc/src/data/repositories/account_repository.dart';
@@ -53,7 +55,8 @@ Future<void> main() async {
 
   // Initializes HydratedBloc for state persistence.
   HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: await getApplicationDocumentsDirectory());
+      storageDirectory: HydratedStorageDirectory(
+          (await getApplicationDocumentsDirectory()).path));
 
   // Loads environment variables from the .env file.
   await dotenv.load(fileName: "config.env");
@@ -187,7 +190,20 @@ class MyApp extends StatelessWidget {
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: ThemeMode.light,
           routerConfig: router,
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('ar'),
+          ],
+          locale: const Locale('ar'),
         ),
       ),
     );

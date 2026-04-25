@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 
 class DotsIndicatorMap extends StatelessWidget {
   const DotsIndicatorMap({
@@ -16,21 +15,24 @@ class DotsIndicatorMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: sliderImages.asMap().entries.map((entry) {
+        final isSelected = current == entry.key;
         return GestureDetector(
           onTap: () => controller.animateToPage(entry.key),
-          child: Container(
-            width: 9.0,
-            height: 9.0,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: isSelected ? 12.0 : 8.0,
+            height: 8.0,
             margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                shape: BoxShape.circle,
-                color: current == entry.key
-                    ? Constants.selectedNavBarColor
-                    : Colors.white),
+              borderRadius: BorderRadius.circular(4),
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(0.2),
+            ),
           ),
         );
       }).toList(),
@@ -52,21 +54,24 @@ class DotsIndicatorList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: sliderImages.asMap().entries.map((entry) {
+        final isSelected = current == entry.key;
         return GestureDetector(
           onTap: () => controller.animateToPage(entry.key),
-          child: Container(
-            width: 9.0,
-            height: 9.0,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: isSelected ? 12.0 : 8.0,
+            height: 8.0,
             margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                shape: BoxShape.circle,
-                color: current == entry.key
-                    ? Constants.selectedNavBarColor
-                    : Colors.white),
+              borderRadius: BorderRadius.circular(4),
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(0.2),
+            ),
           ),
         );
       }).toList(),

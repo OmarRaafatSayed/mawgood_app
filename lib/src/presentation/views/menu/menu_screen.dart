@@ -4,8 +4,8 @@ import 'package:flutter_amazon_clone_bloc/src/config/router/app_route_constants.
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/custom_app_bar.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/custom_text_button.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../widgets/menu/container_clipper.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -14,69 +14,60 @@ class MenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: const PreferredSize(
           preferredSize: Size.fromHeight(60), child: CustomAppBar()),
-      bottomSheet: BottomSheet(
-          onClosing: () {},
-          constraints: const BoxConstraints(maxHeight: 80, minHeight: 80),
-          builder: ((context) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomTextButton(
-                    buttonText: 'Orders',
-                    onPressed: () => context.pushNamed(
-                        AppRouteConstants.yourOrdersScreenRoute.name),
-                    isMenuScreenButton: true),
-                CustomTextButton(
-                    buttonText: 'History',
-                    onPressed: () => context.pushNamed(
-                        AppRouteConstants.browsingHistoryScreenRoute.name),
-                    isMenuScreenButton: true),
-                CustomTextButton(
-                    buttonText: 'Account',
-                    onPressed: () {},
-                    isMenuScreenButton: true),
-                CustomTextButton(
-                    buttonText: 'Wish List',
-                    onPressed: () => context.pushNamed(
-                        AppRouteConstants.yourWishListScreenRoute.name),
-                    isMenuScreenButton: true),
-              ],
-            );
-          })),
+      bottomSheet: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant, width: 0.5)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CustomTextButton(
+                buttonText: l10n.orders,
+                onPressed: () => context.pushNamed(AppRouteConstants.yourOrdersScreenRoute.name),
+                isMenuScreenButton: true),
+            CustomTextButton(
+                buttonText: l10n.history,
+                onPressed: () => context.pushNamed(AppRouteConstants.browsingHistoryScreenRoute.name),
+                isMenuScreenButton: true),
+            CustomTextButton(
+                buttonText: l10n.account,
+                onPressed: () {},
+                isMenuScreenButton: true),
+            CustomTextButton(
+                buttonText: l10n.wishList,
+                onPressed: () => context.pushNamed(AppRouteConstants.yourWishListScreenRoute.name),
+                isMenuScreenButton: true),
+          ],
+        ),
+      ),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Color(0xff84D8E3),
-            Color(0xffA6E6CE),
-            Color.fromARGB(255, 241, 249, 252),
-          ], stops: [
-            0,
-            0.3,
-            0.7
-          ], begin: Alignment.topLeft, end: Alignment.bottomCenter),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.1),
         ),
         child: GridView.builder(
             itemCount: Constants.menuScreenImages.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.75,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.8,
                 crossAxisCount: 3),
-            itemBuilder: ((context, index) {
-              Map<String, String> category = Constants.menuScreenImages[index];
-
+            itemBuilder: (context, index) {
+              final category = Constants.menuScreenImages[index];
               return MenuCategoryContainer(
                 title: category['title']!,
                 category: category['category']!,
                 imageLink: category['image']!,
               );
-              // );
-            })),
+            }),
       ),
     );
   }
@@ -96,67 +87,68 @@ class MenuCategoryContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: () => context.pushNamed(
           AppRouteConstants.categoryproductsScreenRoute.name,
           pathParameters: {'category': category}),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        height: 170,
-        width: 125,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
           boxShadow: [
             BoxShadow(
-                color: Colors.grey.shade500.withAlpha(88),
-                blurRadius: 3,
-                offset: const Offset(0, 0),
-                spreadRadius: 3)
+              color: theme.shadowColor.withOpacity(0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            )
           ],
-          border: Border.all(color: Colors.grey.shade500, width: 1),
         ),
         child: Stack(
           children: [
             Positioned(
               bottom: 0,
+              right: 0,
+              left: 0,
               child: ClipPath(
                 clipper: ContainerClipper(),
                 child: Container(
-                  height: 170,
-                  width: 125,
+                  height: 120,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 229, 249, 254),
-                    borderRadius: BorderRadius.circular(8),
+                    color: theme.colorScheme.primaryContainer.withOpacity(0.2),
+                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
                   ),
                 ),
               ),
             ),
-            Positioned(
-              bottom: 4,
-              left: 0,
-              right: 0,
-              child: CachedNetworkImage(
-                imageUrl: imageLink,
-                width: 120,
-                height: 90,
-                fit: BoxFit.contain,
-              ),
-            ),
-            Positioned(
-                left: 12,
-                top: 10,
-                child: SizedBox(
-                  width: 100,
-                  child: Text(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     title,
-                    maxLines: 3,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 14,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
                     ),
                   ),
-                )),
+                  const Spacer(),
+                  Center(
+                    child: CachedNetworkImage(
+                      imageUrl: imageLink,
+                      height: 80,
+                      fit: BoxFit.contain,
+                      placeholder: (context, url) => const SizedBox(height: 80),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

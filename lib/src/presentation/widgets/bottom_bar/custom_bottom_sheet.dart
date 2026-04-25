@@ -1,9 +1,8 @@
 import 'dart:io';
-
 import 'package:camera_camera/camera_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/bottom_bar/pay_containers.dart';
-import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 
 class CustomBottomSheet extends StatefulWidget {
   const CustomBottomSheet({
@@ -25,9 +24,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           onFile: (file) {
             photos!.add(file);
             Navigator.pop(context);
-            setState(
-              () {},
-            );
+            setState(() {});
           },
         ),
       ),
@@ -36,47 +33,47 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18).copyWith(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 18).copyWith(bottom: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const Center(
-              child: Text(
-            'Do more with Amazon',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          )),
-          const SizedBox(height: 10),
+          Center(
+            child: Text(
+              l10n.doMore,
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 16),
           GestureDetector(
-            onTap: () => openCamera(),
+            onTap: openCamera,
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: const Color(0xffE9EDEE),
-                  border:
-                      Border.all(color: const Color(0xffD6DADB), width: 0.5),
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8))),
+                color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                border: Border.all(color: theme.colorScheme.outlineVariant, width: 0.5),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Icon(
+                  Icon(
                     Icons.center_focus_strong_outlined,
-                    size: 50,
-                    color: Colors.black54,
+                    size: 48,
+                    color: theme.colorScheme.primary.withOpacity(0.7),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 12),
                   Text(
                     'Tap here to enable your camera',
-                    style: TextStyle(
-                        fontSize: 12, color: Constants.selectedNavBarColor),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -85,30 +82,35 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           Container(
             width: double.infinity,
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-                color: const Color(0xffE2EFE8),
-                border: Border.all(color: const Color(0xffD6DADB), width: 0.5),
-                borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8))),
-            child: const Text(
+              color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+              border: Border.all(color: theme.colorScheme.outlineVariant, width: 0.5),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
+            ),
+            child: Text(
               'Scan any QR to Pay',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
             ),
           ),
-          const SizedBox(height: 12),
-          const Row(
+          const SizedBox(height: 16),
+          Row(
             children: [
-              PayContainers(
+              Expanded(
+                child: PayContainers(
                   imagepath: 'assets/images/bottom_offers/amazon_pay.png',
                   belowText: 'Pay Bills, Send Money & more',
-                  onPressedString: 'Amazon Pay'),
-              SizedBox(width: 10),
-              PayContainers(
+                  onPressedString: l10n.amazonPay,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: PayContainers(
                   imagepath: 'assets/images/minitv.png',
                   belowText: 'Watch Free Web Series & Shows',
-                  onPressedString: 'Amazon MiniTV'),
+                  onPressedString: l10n.miniTV,
+                ),
+              ),
             ],
           )
         ],

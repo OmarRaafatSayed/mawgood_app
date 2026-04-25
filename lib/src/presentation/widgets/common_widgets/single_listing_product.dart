@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone_bloc/src/config/router/app_route_constants.dart';
 import 'package:flutter_amazon_clone_bloc/src/data/models/product.dart';
-import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/utils.dart';
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'stars.dart';
 
@@ -19,11 +19,10 @@ class SingleListingProduct extends StatelessWidget {
   final String? deliveryDate;
   final double? averageRating;
 
-  // @override
   @override
   Widget build(BuildContext context) {
-    const productTextStyle = TextStyle(
-        fontSize: 12, color: Colors.black54, fontWeight: FontWeight.normal);
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return GestureDetector(
       onTap: () {
@@ -35,99 +34,105 @@ class SingleListingProduct extends StatelessWidget {
       },
       child: Container(
         height: 180,
-        margin: const EdgeInsets.symmetric(vertical: 6),
+        margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300, width: 0.5),
-            borderRadius: BorderRadius.circular(5)),
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               height: 180,
-              width: 160,
-              decoration: const BoxDecoration(color: Color(0xffF7F7F7)),
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: CachedNetworkImage(
-                  imageUrl: product!.images[0],
-                  fit: BoxFit.contain,
+              width: 140,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: product!.images[0],
+                fit: BoxFit.contain,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(color: theme.colorScheme.primary, strokeWidth: 2),
                 ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 10, right: 4, top: 4, bottom: 4),
-                child: Flex(
-                  direction: Axis.vertical,
+                padding: const EdgeInsets.all(12),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
                       product!.name,
                       maxLines: 2,
-                      style: const TextStyle(
-                          fontSize: 16, overflow: TextOverflow.ellipsis),
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           averageRating!.toStringAsFixed(1),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Constants.selectedNavBarColor),
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
-                        Stars(
-                          rating: averageRating!,
-                          size: 20,
+                        const SizedBox(width: 4),
+                        Stars(rating: averageRating!, size: 16),
+                        const SizedBox(width: 4),
+                        Text(
+                          '(${product!.rating!.length})',
+                          style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                         ),
-                        Text('(${product!.rating!.length})',
-                            style: productTextStyle.copyWith(fontSize: 14)),
                       ],
                     ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text(
+                        Text(
                           '₹',
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
                         Text(
                           formatPrice(product!.price),
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w400),
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
                       ],
                     ),
-                    // const SizedBox(height: 4),
                     RichText(
                       text: TextSpan(
-                          text: 'Get it by ',
-                          style: productTextStyle,
-                          children: [
-                            TextSpan(
-                              text: deliveryDate,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff56595A)),
-                            )
-                          ]),
+                        text: '${l10n.getItBy} ',
+                        style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                        children: [
+                          TextSpan(
+                            text: deliveryDate,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                    // const SizedBox(height: 4),
-                    const Text(
-                      'FREE Delivery by Amazon',
-                      style: productTextStyle,
-                    ),
-                    // const SizedBox(height: 4),
-                    const Text(
-                      '7 days Replacement',
-                      style: productTextStyle,
+                    Text(
+                      l10n.freeDelivery,
+                      style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.secondary),
                     ),
                   ],
                 ),

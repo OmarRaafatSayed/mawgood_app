@@ -132,7 +132,7 @@ class Constants {
   //Bottom offers amazon pay
   static const List<Map<String, String>> bottomOffersAmazonPay = [
     {
-      'title': 'Amazon Pay',
+      'title': 'Mawgood Pay',
       'image': 'assets/images/bottom_offers/amazon_pay.png'
     },
     {
@@ -166,7 +166,7 @@ class Constants {
   // Bottom offers images
   static const List<Map<String, String>> bottomOfferImages = [
     {
-      'category': 'AmazonPay',
+      'category': 'MawgoodPay',
       'image':
           'https://res.cloudinary.com/dthljz11q/image/upload/v1699472117/bottom_offers/quvjt4q774dqkkqe0tb4.png',
     },
@@ -356,7 +356,7 @@ class Constants {
     {'iconName': 'warranty.png', 'title': '1 Year Warranty'},
     {'iconName': 'pay_on_delivery.png', 'title': 'Pay on Delivery'},
     {'iconName': 'top_brand.png', 'title': 'Top Brand'},
-    {'iconName': 'delivered.png', 'title': 'Amazon Delivered'},
+    {'iconName': 'delivered.png', 'title': 'Mawgood Delivered'},
   ];
 
   static const List<Map<String, String>> menuScreenImages = [
@@ -440,14 +440,14 @@ List<SingleImageOffer> singleImageOffers = const [
     productCategory: 'Home',
   ),
   SingleImageOffer(
-    headTitle: 'Price crash | Amazon Brands & more',
+    headTitle: 'Price crash | Mawgood Brands & more',
     subTitle: 'Under ₹499 | T-shirts & shirts',
     image:
         'https://res.cloudinary.com/dthljz11q/image/upload/v1699881800/single_image_offers/kwfypkjyfqjsipniefav.png',
     productCategory: 'Fashion',
   ),
   SingleImageOffer(
-    headTitle: 'Amazon coupons | Smartphones & accessories',
+    headTitle: 'Mawgood coupons | Smartphones & accessories',
     subTitle: 'Extra up to ₹2000 off with coupons',
     image:
         'https://res.cloudinary.com/dthljz11q/image/upload/v1699881799/single_image_offers/rmtbk89pmenhd3mulcus.jpg',

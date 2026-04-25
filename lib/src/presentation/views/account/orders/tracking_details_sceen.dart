@@ -7,161 +7,111 @@ import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/account/order
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/account/orders/widgets/you_might_also_like_block.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/custom_app_bar.dart';
 import 'package:flutter_amazon_clone_bloc/src/presentation/widgets/common_widgets/divider_with_sizedbox.dart';
-import 'package:flutter_amazon_clone_bloc/src/utils/constants/constants.dart';
 import 'package:flutter_amazon_clone_bloc/src/utils/utils.dart';
+import 'package:flutter_amazon_clone_bloc/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 class TrackingDetailsScreen extends StatelessWidget {
   final Order order;
   final User user;
-  const TrackingDetailsScreen(
-      {super.key, required this.order, required this.user});
+  const TrackingDetailsScreen({super.key, required this.order, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle textStyle = TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w500,
-        color: Constants.selectedNavBarColor);
-
-    const TextStyle subtextStyle = TextStyle(
-        fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black87);
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: const PreferredSize(
           preferredSize: Size.fromHeight(60), child: CustomAppBar()),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              user.type == 'user'
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              if (user.type == 'user')
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Row(
                       children: [
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 6,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    getStatus(order.status),
-                                    style: textStyle,
-                                  ),
-                                  Text(
-                                    getSubStatus(order.status),
-                                    style: subtextStyle,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: GestureDetector(
-                                onTap: () => context.pushNamed(
-                                    AppRouteConstants
-                                        .orderDetailsScreenRoute.name,
-                                    extra: order),
-                                child: CachedNetworkImage(
-                                  imageUrl: order.products[0].images[0],
-                                  height: 70,
-                                  width: 70,
-                                  fit: BoxFit.fitHeight,
+                        Expanded(
+                          flex: 6,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                getStatus(order.status),
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              Text(
+                                getSubStatus(order.status),
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () => context.pushNamed(
+                                AppRouteConstants.orderDetailsScreenRoute.name,
+                                extra: order),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: CachedNetworkImage(
+                                imageUrl: order.products[0].images[0],
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.contain,
+                              ),
                             ),
-                          ],
-                        ),
-                        const DividerWithSizedBox(
-                          thickness: 0.5,
-                          sB1Height: 8,
-                        ),
-                        UserAddressBlock(
-                          order: order,
-                          user: user,
-                          subtextStyle: subtextStyle,
-                        ),
-                        const DividerWithSizedBox(
-                          thickness: 4,
-                          sB1Height: 20,
-                          sB2Height: 20,
-                        ),
-                        const Text(
-                          'Delivery by Amazon',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87),
-                        ),
-                        Text(
-                          ' Order ID: ${order.id}',
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87),
+                          ),
                         ),
                       ],
-                    )
-                  : TrackingDetailsBottomSheet(
-                      order: order,
-                      user: user,
                     ),
-              const DividerWithSizedBox(
-                thickness: 4,
-                sB1Height: 20,
-                sB2Height: 15,
-              ),
-              const Text(
+                    const DividerWithSizedBox(thickness: 0.5, sB1Height: 12),
+                    UserAddressBlock(order: order, user: user),
+                    const DividerWithSizedBox(thickness: 8, sB1Height: 24, sB2Height: 24),
+                    Text(
+                      l10n.deliveryBy,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'Order ID: ${order.id}',
+                      style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
+                  ],
+                )
+              else
+                TrackingDetailsBottomSheet(order: order, user: user),
+              const DividerWithSizedBox(thickness: 8, sB1Height: 24, sB2Height: 20),
+              Text(
                 'Order Info',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87),
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10),
-              const Divider(
-                thickness: 0.5,
-                color: Color(0xffD5D9DA),
-              ),
+              const SizedBox(height: 12),
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 onTap: () => context.pushNamed(
                     AppRouteConstants.orderDetailsScreenRoute.name,
                     extra: order),
-                title: Text('View order details',
-                    style: subtextStyle.copyWith(fontSize: 15)),
-                style: ListTileStyle.list,
-                trailing: Icon(
-                  Icons.chevron_right_rounded,
-                  color: user.type == 'user'
-                      ? Colors.black87
-                      : Constants.greenColor,
-                ),
+                title: Text('View order details', style: theme.textTheme.bodyLarge),
+                trailing: const Icon(Icons.chevron_right_rounded),
               ),
-              const Divider(
-                thickness: 0.5,
-                color: Color(0xffD5D9DA),
-              ),
-              const DividerWithSizedBox(
-                thickness: 4,
-                sB1Height: 20,
-                sB2Height: 15,
-              ),
-              user.type == 'user'
-                  ? YouMightAlsoLikeBlock(
-                      productName: order.products[0].name.length >= 30
-                          ? order.products[0].name.substring(0, 30)
-                          : order.products[0].name.substring(
-                              0,
-                              order.products[0].name.length,
-                            ),
-                    )
-                  : const SizedBox()
+              const Divider(thickness: 0.5),
+              const SizedBox(height: 24),
+              if (user.type == 'user')
+                YouMightAlsoLikeBlock(
+                  productName: order.products[0].name.length >= 30
+                      ? order.products[0].name.substring(0, 30)
+                      : order.products[0].name,
+                )
             ],
           ),
         ),
@@ -171,74 +121,56 @@ class TrackingDetailsScreen extends StatelessWidget {
 }
 
 class UserAddressBlock extends StatelessWidget {
-  const UserAddressBlock({
-    super.key,
-    required this.user,
-    required this.subtextStyle,
-    required this.order,
-  });
+  const UserAddressBlock({super.key, required this.user, required this.order});
 
   final Order order;
   final User user;
-  final TextStyle subtextStyle;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            height: 30,
-            width: 30,
-            color: const Color(0xff4CC2B4),
-            child: const Icon(
-              Icons.done,
-              fill: 1,
-              size: 20,
-              color: Colors.white,
-            )),
-        const SizedBox(width: 12),
-        SizedBox(
-          height: 80,
+          height: 32,
+          width: 32,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.secondary,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(Icons.done, size: 20, color: theme.colorScheme.onSecondary),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(
-                getStatus(order.status),
-                style: subtextStyle,
-              ),
-              Text(
-                capitalizeFirstLetter(string: user.name),
-                style: subtextStyle,
-              ),
-              Text(
-                user.address,
-                style: subtextStyle,
-              ),
+              Text(getStatus(order.status), style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text(capitalizeFirstLetter(string: user.name), style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 2),
+              Text(user.address, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              const SizedBox(height: 12),
               GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
-                      backgroundColor: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(0),
-                          topRight: Radius.circular(0),
-                        ),
-                      ),
-                      context: context,
-                      builder: (context) {
-                        return TrackingDetailsBottomSheet(
-                          order: order,
-                          user: user,
-                        );
-                      });
+                    context: context,
+                    backgroundColor: theme.colorScheme.surface,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (context) => TrackingDetailsBottomSheet(order: order, user: user),
+                  );
                 },
                 child: Text(
                   'See all updates',
-                  style: subtextStyle.copyWith(
-                      color: Constants.selectedNavBarColor),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               )
             ],

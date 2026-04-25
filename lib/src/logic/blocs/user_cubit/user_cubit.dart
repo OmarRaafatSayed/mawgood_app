@@ -20,13 +20,16 @@ class UserCubit extends Cubit<UserState> with HydratedMixin {
     }
   }
 
-  Future<User> getUserData() async {
-    User user;
-
-    user = await userRepository.getUserData();
-    saveToStorage(user);
-    emit(UserSuccessS(user: user));
-    return user;
+  Future<User?> getUserData() async {
+    try {
+      User user = await userRepository.getUserData();
+      saveToStorage(user);
+      emit(UserSuccessS(user: user));
+      return user;
+    } catch (e) {
+      emit(UserErrorS(errorString: e.toString()));
+      return null;
+    }
   }
 
   User? get currentUser {

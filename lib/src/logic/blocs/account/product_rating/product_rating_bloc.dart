@@ -27,7 +27,8 @@ class ProductRatingBloc
     return ratingsList;
   }
 
-  void _onGetProductRatingHandler(event, emit) async {
+  void _onGetProductRatingHandler(
+      GetProductRatingEvent event, Emitter<ProductRatingState> emit) async {
     try {
       emit(const GetProductRatingInitialS(initialRating: -1));
 
@@ -41,7 +42,8 @@ class ProductRatingBloc
   }
 
   // rate product and fetch ratings again
-  void _onRateProductPressedHandler(event, emit) async {
+  void _onRateProductPressedHandler(
+      RateProductPressedEvent event, Emitter<ProductRatingState> emit) async {
     try {
       List<double> ratingsList = [];
       ratingsList = await _getProductRatingList(event.order);

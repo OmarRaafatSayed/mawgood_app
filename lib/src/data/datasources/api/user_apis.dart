@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class UserApi {
   final client = http.Client();
 
-  Future<http.Response> getUserDataInitial(var token) async {
+  Future<http.Response> getUserDataInitial(String token) async {
     try {
       http.Response res = await client.get(
         Uri.parse(getUserDataUri),

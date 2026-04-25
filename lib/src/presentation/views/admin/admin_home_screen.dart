@@ -101,7 +101,7 @@ class MenuCategoryContainerAdmin extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-                color: Colors.grey.shade500.withOpacity(0.35),
+                color: Colors.grey.shade500.withAlpha(88),
                 blurRadius: 3,
                 offset: const Offset(0, 0),
                 spreadRadius: 3)

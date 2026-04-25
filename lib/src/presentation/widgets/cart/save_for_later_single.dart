@@ -189,8 +189,11 @@ class SaveForLaterSingle extends StatelessWidget {
                                     ),
                                   );
                                 })
-                            .whenComplete(() =>
-                                context.read<CartBloc>().add(GetCartPressed()));
+                            .whenComplete(() {
+                          if (context.mounted) {
+                            context.read<CartBloc>().add(GetCartPressed());
+                          }
+                        });
                       }),
                 ),
                 Expanded(

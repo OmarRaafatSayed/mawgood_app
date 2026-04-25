@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_amazon_clone_bloc/src/config/router/router.dart';
@@ -15,9 +14,6 @@ import 'package:flutter_amazon_clone_bloc/src/logic/blocs/account/keep_shopping_
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/account/product_rating/product_rating_bloc.dart';
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/account/wish_list/wish_list_cubit.dart';
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/admin/admin_add_offers/four-images-offer/admin_four_image_offer_cubit.dart';
-import 'package:flutter_amazon_clone_bloc/src/logic/blocs/admin/admin_add_offers/single_image_carousel_cubit/single_image_carousel_cubit.dart';
-import 'package:flutter_amazon_clone_bloc/src/logic/blocs/admin/admin_add_products/add_product_images/admin_add_products_images_bloc.dart';
-import 'package:flutter_amazon_clone_bloc/src/logic/blocs/admin/admin_add_products/select_category_cubit/admin_add_select_category_cubit.dart';
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/admin/admin_add_products/sell_product_cubit/admin_sell_product_cubit.dart';
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/admin/admin_bottom_bar_cubit/admin_bottom_bar_cubit.dart';
 import 'package:flutter_amazon_clone_bloc/src/logic/blocs/admin/admin_change_order_status/admin_change_order_status_cubit.dart';
@@ -47,14 +43,21 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
+  // Ensures that the Flutter binding is initialized before any Flutter-specific code is run.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Restricts the app to portrait mode.
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  final dir = await getApplicationDocumentsDirectory();
+
+  // Initializes HydratedBloc for state persistence.
   HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: HydratedStorageDirectory(dir.path));
+      storageDirectory: await getApplicationDocumentsDirectory());
+
+  // Loads environment variables from the .env file.
   await dotenv.load(fileName: "config.env");
+
   runApp(const MyApp());
 }
 
@@ -63,100 +66,129 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    // Using MultiRepositoryProvider to provide repository instances to the widget tree.
+    // This decouples the repositories from the Blocs and makes them easily mockable for tests.
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(
-          create: (context) => AuthBloc(AuthRepository()),
-        ),
-        BlocProvider(
-          create: (context) => RadioBloc(),
-        ),
-        BlocProvider(
-          create: (context) => UserCubit(UserRepository()),
-        ),
-        BlocProvider(
-          create: (context) => CartBloc(UserRepository()),
-        ),
-        BlocProvider(
-          create: (context) => PageRedirectionCubit(AuthRepository()),
-        ),
-        BlocProvider(
-          create: (context) => BottomBarBloc(),
-        ),
-        BlocProvider(
-          create: (context) => CarouselImageBloc(),
-        ),
-        BlocProvider(
-          create: (context) =>
-              FetchCategoryProductsBloc(CategoryProductsRepository()),
-        ),
-        BlocProvider(
-          create: (context) => SearchBloc(ProductsRepository()),
-        ),
-        BlocProvider(
-          create: (context) => FetchAccountScreenDataCubit(UserRepository()),
-        ),
-        BlocProvider(
-          create: (context) => FetchOrdersCubit(AccountRepository()),
-        ),
-        BlocProvider(
-          create: (context) => ProductRatingBloc(AccountRepository()),
-        ),
-        BlocProvider(
-          create: (context) => KeepShoppingForCubit(AccountRepository()),
-        ),
-        BlocProvider(
-          create: (context) => WishListCubit(
-              accountRepository: AccountRepository(),
-              userRepository: UserRepository()),
-        ),
-        BlocProvider(
-          create: (context) => UserRatingCubit(AccountRepository()),
-        ),
-        BlocProvider(
-          create: (context) => CartOffersCubit1(AccountRepository()),
-        ),
-        BlocProvider(
-          create: (context) => CartOffersCubit2(AccountRepository()),
-        ),
-        BlocProvider(
-          create: (context) => CartOffersCubit3(AccountRepository()),
-        ),
-        BlocProvider(
-          create: (context) => OrderCubit(UserRepository()),
-        ),
-        BlocProvider(
-          create: (context) => PlaceOrderBuyNowCubit(UserRepository()),
-        ),
-        BlocProvider(
-          create: (context) => AverageRatingCubit(AccountRepository()),
-        ),
-        BlocProvider(create: (context) => AdminBottomBarCubit()),
-        BlocProvider(
-            create: (context) =>
-                AdminFetchCategoryProductsBloc(AdminRepository())),
-        BlocProvider(
-            create: (context) => AdminFetchOrdersCubit(AdminRepository())),
-        BlocProvider(
-            create: (context) =>
-                AdminChangeOrderStatusCubit(AdminRepository())),
-        BlocProvider(
-            create: (context) => AdminGetAnalyticsCubit(AdminRepository())),
-        BlocProvider(
-            create: (context) => AdminAddProductsImagesBloc(AdminRepository())),
-        BlocProvider(create: (context) => AdminAddSelectCategoryCubit()),
-        BlocProvider(create: (context) => SingleImageCubit()),
-        BlocProvider(
-            create: (context) => AdminSellProductCubit(AdminRepository())),
-        BlocProvider(
-            create: (context) => AdminFourImageOfferCubit(AdminRepository())),
-        BlocProvider(
-            create: (context) => DealOfTheDayCubit(ProductsRepository())),
+        RepositoryProvider<AuthRepository>(create: (context) => AuthRepository()),
+        RepositoryProvider<UserRepository>(create: (context) => UserRepository()),
+        RepositoryProvider<ProductsRepository>(
+            create: (context) => ProductsRepository()),
+        RepositoryProvider<AccountRepository>(
+            create: (context) => AccountRepository()),
+        RepositoryProvider<AdminRepository>(create: (context) => AdminRepository()),
+        RepositoryProvider<CategoryProductsRepository>(
+            create: (context) => CategoryProductsRepository()),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light,
-        routerConfig: router,
+      child: MultiBlocProvider(
+        providers: [
+          // Blocs are now created using the repositories provided by MultiRepositoryProvider.
+          // This follows the dependency injection principle.
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(context.read<AuthRepository>()),
+          ),
+          BlocProvider<RadioBloc>(create: (context) => RadioBloc()),
+          BlocProvider<UserCubit>(
+            create: (context) => UserCubit(context.read<UserRepository>()),
+          ),
+          BlocProvider<CartBloc>(
+            create: (context) => CartBloc(context.read<UserRepository>()),
+          ),
+          BlocProvider<PageRedirectionCubit>(
+            create: (context) =>
+                PageRedirectionCubit(context.read<AuthRepository>()),
+          ),
+          BlocProvider<BottomBarBloc>(create: (context) => BottomBarBloc()),
+          BlocProvider<CarouselImageBloc>(
+              create: (context) => CarouselImageBloc()),
+          BlocProvider<FetchCategoryProductsBloc>(
+            create: (context) => FetchCategoryProductsBloc(
+                context.read<CategoryProductsRepository>()),
+          ),
+          BlocProvider<SearchBloc>(
+            create: (context) => SearchBloc(context.read<ProductsRepository>()),
+          ),
+          BlocProvider<FetchAccountScreenDataCubit>(
+            create: (context) =>
+                FetchAccountScreenDataCubit(context.read<UserRepository>()),
+          ),
+          BlocProvider<FetchOrdersCubit>(
+            create: (context) =>
+                FetchOrdersCubit(context.read<AccountRepository>()),
+          ),
+          BlocProvider<ProductRatingBloc>(
+            create: (context) =>
+                ProductRatingBloc(context.read<AccountRepository>()),
+          ),
+          BlocProvider<KeepShoppingForCubit>(
+            create: (context) =>
+                KeepShoppingForCubit(context.read<AccountRepository>()),
+          ),
+          BlocProvider<WishListCubit>(
+            create: (context) => WishListCubit(
+                accountRepository: context.read<AccountRepository>(),
+                userRepository: context.read<UserRepository>()),
+          ),
+          BlocProvider<UserRatingCubit>(
+            create: (context) =>
+                UserRatingCubit(context.read<AccountRepository>()),
+          ),
+          BlocProvider<CartOffersCubit1>(
+              create: (context) =>
+                  CartOffersCubit1(context.read<AccountRepository>())),
+          BlocProvider<CartOffersCubit2>(
+              create: (context) =>
+                  CartOffersCubit2(context.read<AccountRepository>())),
+          BlocProvider<CartOffersCubit3>(
+              create: (context) =>
+                  CartOffersCubit3(context.read<AccountRepository>())),
+          BlocProvider<OrderCubit>(
+            create: (context) => OrderCubit(context.read<UserRepository>()),
+          ),
+          BlocProvider<PlaceOrderBuyNowCubit>(
+            create: (context) =>
+                PlaceOrderBuyNowCubit(context.read<UserRepository>()),
+          ),
+          BlocProvider<AverageRatingCubit>(
+            create: (context) =>
+                AverageRatingCubit(context.read<AccountRepository>()),
+          ),
+          BlocProvider<AdminBottomBarCubit>(
+              create: (context) => AdminBottomBarCubit()),
+          BlocProvider<AdminFetchCategoryProductsBloc>(
+            create: (context) =>
+                AdminFetchCategoryProductsBloc(context.read<AdminRepository>()),
+          ),
+          BlocProvider<AdminFetchOrdersCubit>(
+            create: (context) =>
+                AdminFetchOrdersCubit(context.read<AdminRepository>()),
+          ),
+          BlocProvider<AdminChangeOrderStatusCubit>(
+            create: (context) =>
+                AdminChangeOrderStatusCubit(context.read<AdminRepository>()),
+          ),
+          BlocProvider<AdminGetAnalyticsCubit>(
+            create: (context) =>
+                AdminGetAnalyticsCubit(context.read<AdminRepository>()),
+          ),
+          BlocProvider<AdminSellProductCubit>(
+            create: (context) =>
+                AdminSellProductCubit(context.read<AdminRepository>()),
+          ),
+          BlocProvider<AdminFourImageOfferCubit>(
+            create: (context) =>
+                AdminFourImageOfferCubit(context.read<AdminRepository>()),
+          ),
+          BlocProvider<DealOfTheDayCubit>(
+            create: (context) =>
+                DealOfTheDayCubit(context.read<ProductsRepository>()),
+          ),
+        ],
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          routerConfig: router,
+        ),
       ),
     );
   }

@@ -22,7 +22,7 @@ import 'package:go_router/go_router.dart';
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
-  getCartOffers(context) async {
+  Future<void> getCartOffers(BuildContext context) async {
     List<String> categories =
         await BlocProvider.of<CartOffersCubit1>(context).setOfferCategories();
     BlocProvider.of<CartOffersCubit1>(context)

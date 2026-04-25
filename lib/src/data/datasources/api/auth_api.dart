@@ -33,7 +33,7 @@ class AuthAPI {
     );
   }
 
-  Future<http.Response> isTokenValid({required var token}) async {
+  Future<http.Response> isTokenValid({required String token}) async {
     try {
       http.Response res =
           await http.get(Uri.parse(isTokenValidUri), headers: <String, String>{

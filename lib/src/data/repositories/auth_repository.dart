@@ -36,7 +36,7 @@ class AuthRepository {
     }
   }
 
-  Future<bool> isTokenValid({required var token}) async {
+  Future<bool> isTokenValid({required String token}) async {
     try {
       http.Response res = await AuthAPI().isTokenValid(token: token);
 

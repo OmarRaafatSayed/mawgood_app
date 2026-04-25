@@ -36,7 +36,7 @@ class AdminFourImagesOffer extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           // height: 500,
           decoration: BoxDecoration(
-              color: Colors.grey.shade100.withOpacity(0.6),
+              color: Colors.grey.shade100.withAlpha(153),
               borderRadius: BorderRadius.circular(5)),
           // width: MediaQuery.sizeOf(context).width,
           child: Column(

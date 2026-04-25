@@ -35,9 +35,9 @@ class YourOrders extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                      color: Colors.grey.withOpacity(0.8), width: 0.5),
+                      color: Colors.grey.withAlpha(204), width: 0.5),
                   top: BorderSide(
-                      color: Colors.grey.withOpacity(0.8), width: 0.5),
+                      color: Colors.grey.withAlpha(204), width: 0.5),
                 ),
               ),
               child: Center(
@@ -64,7 +64,7 @@ class YourOrders extends StatelessWidget {
                         decoration: BoxDecoration(
                           border: Border(
                             left: BorderSide(
-                                color: Colors.grey.withOpacity(0.8),
+                                color: Colors.grey.withAlpha(204),
                                 width: 0.5),
                           ),
                         ),

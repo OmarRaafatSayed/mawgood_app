@@ -49,7 +49,7 @@ class BottomBar extends StatelessWidget {
                   children: [
                     pages[lastIndex],
                     Container(
-                      color: Colors.black87.withOpacity(0.5),
+                      color: Colors.black87.withAlpha(128),
                     )
                   ],
                 ),

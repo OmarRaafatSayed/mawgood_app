@@ -26,9 +26,9 @@ class OrderListSingle extends StatelessWidget {
         decoration: BoxDecoration(
             border: Border(
                 top:
-                    BorderSide(color: Colors.grey.withOpacity(0.8), width: 0.5),
+                    BorderSide(color: Colors.grey.withAlpha(204), width: 0.5),
                 bottom: BorderSide(
-                    color: Colors.grey.withOpacity(0.8), width: 0.5))),
+                    color: Colors.grey.withAlpha(204), width: 0.5))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

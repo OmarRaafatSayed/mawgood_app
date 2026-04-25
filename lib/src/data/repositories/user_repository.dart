@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class UserRepository {
   final UserApi userApi = UserApi();
 
-  Future<User> getUserDataInitial(var token) async {
+  Future<User> getUserDataInitial(String token) async {
     try {
       http.Response res = await userApi.getUserDataInitial(token);
 

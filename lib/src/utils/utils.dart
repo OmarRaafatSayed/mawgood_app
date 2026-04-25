@@ -32,7 +32,7 @@ void precatchedImageMap(
 // }
 
 String formatFolderName(String productName) {
-  var formattedName = productName.replaceAll(' ', '-');
+  String formattedName = productName.replaceAll(' ', '-');
 
   if (formattedName.length > 255) {
     formattedName = formattedName.substring(0, 255);
@@ -51,7 +51,7 @@ String getDeliveryDate() {
   return formattedDeliveryDate;
 }
 
-formatDate(int date) {
+String formatDate(int date) {
   final DateFormat formatter = DateFormat('MMMM dd, yyyy');
   final String formattedOrderDate =
       formatter.format(DateTime.fromMillisecondsSinceEpoch(date));
@@ -77,7 +77,7 @@ String formatPriceWithDecimal(num price) {
 }
 
 String formatLakhs(int lakhs) {
-  final formatter = NumberFormat.compact(locale: 'en_IN');
+  final NumberFormat formatter = NumberFormat.compact(locale: 'en_IN');
   final String formattedAmount = formatter.format(lakhs);
   return formattedAmount;
 }
@@ -121,7 +121,7 @@ String capitalizeFirstLetter({required String string}) {
   return firstLetter + remainingString;
 }
 
-Random random = Random();
+final Random random = Random();
 
 String getRandomFromMap(List<Map<String, String>> map) {
   int randomIndex = random.nextInt(map.length);
@@ -133,7 +133,7 @@ String getRandomFromMap(List<Map<String, String>> map) {
   return randomTitle;
 }
 
-int getUniqueRandomInt({required max}) {
+int getUniqueRandomInt({required int max}) {
   Set<int> randomIntSet = <int>{};
 
   int randomInt;

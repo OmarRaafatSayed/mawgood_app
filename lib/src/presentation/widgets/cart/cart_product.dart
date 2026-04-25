@@ -161,7 +161,10 @@ class CartProduct extends StatelessWidget {
                               context
                                   .read<CartBloc>()
                                   .add(SaveForLaterE(product: product));
-                              showSnackBar(context, 'Save for later!');
+
+                              if (context.mounted) {
+                                showSnackBar(context, 'Save for later!');
+                              }
                             }),
                       ],
                     ),

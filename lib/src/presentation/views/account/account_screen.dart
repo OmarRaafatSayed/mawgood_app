@@ -49,8 +49,8 @@ class _AccountScreenState extends State<AccountScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                               colors: [
-                                Colors.white.withOpacity(0.1),
-                                Colors.white.withOpacity(0.9)
+                                Colors.white.withAlpha(25),
+                                Colors.white.withAlpha(230)
                               ],
                               stops: const [
                                 0,

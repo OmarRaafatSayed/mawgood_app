@@ -83,15 +83,13 @@ class _AuthScreenState extends State<AuthScreen> {
                               children: [
                                 ListTile(
                                   minLeadingWidth: 2,
-                                  leading: SizedBox.square(
-                                    dimension: 12,
-                                    child: Radio(
-                                        value: Auth.signUp,
-                                        groupValue: state.auth,
-                                        onChanged: (Auth? val) {
-                                          context.read<RadioBloc>().add(
-                                              RadioChangedEvent(auth: val!));
-                                        }),
+                                  leading: Radio<Auth>(
+                                    value: Auth.signUp,
+                                    groupValue: state.auth,
+                                    onChanged: (Auth? val) {
+                                      context.read<RadioBloc>().add(
+                                          RadioChangedEvent(auth: val!));
+                                    },
                                   ),
                                   title: RichText(
                                     text: const TextSpan(children: [
@@ -250,16 +248,13 @@ class _AuthScreenState extends State<AuthScreen> {
                               children: [
                                 ListTile(
                                   minLeadingWidth: 2,
-                                  leading: SizedBox.square(
-                                    dimension: 12,
-                                    child: Radio(
-                                        value: Auth.signIn,
-                                        groupValue: state.auth,
-                                        onChanged: (Auth? val) {
-                                          context.read<RadioBloc>().add(
-                                              RadioChangedEvent(auth: val!));
-                                        }),
-                                  ),
+                                  leading: Radio<Auth>(
+                                      value: Auth.signIn,
+                                      groupValue: state.auth,
+                                      onChanged: (Auth? val) {
+                                        context.read<RadioBloc>().add(
+                                            RadioChangedEvent(auth: val!));
+                                      }),
                                   title: RichText(
                                     text: const TextSpan(children: [
                                       TextSpan(
@@ -302,16 +297,13 @@ class _AuthScreenState extends State<AuthScreen> {
                               child: Column(children: [
                                 ListTile(
                                   minLeadingWidth: 2,
-                                  leading: SizedBox.square(
-                                    dimension: 12,
-                                    child: Radio(
-                                        value: Auth.signUp,
-                                        groupValue: state.auth,
-                                        onChanged: (Auth? val) {
-                                          context.read<RadioBloc>().add(
-                                              RadioChangedEvent(auth: val!));
-                                        }),
-                                  ),
+                                  leading: Radio<Auth>(
+                                      value: Auth.signUp,
+                                      groupValue: state.auth,
+                                      onChanged: (Auth? val) {
+                                        context.read<RadioBloc>().add(
+                                            RadioChangedEvent(auth: val!));
+                                      }),
                                   title: RichText(
                                     text: const TextSpan(children: [
                                       TextSpan(
@@ -346,16 +338,13 @@ class _AuthScreenState extends State<AuthScreen> {
                               children: [
                                 ListTile(
                                   minLeadingWidth: 2,
-                                  leading: SizedBox.square(
-                                    dimension: 12,
-                                    child: Radio(
-                                        value: Auth.signIn,
-                                        groupValue: state.auth,
-                                        onChanged: (Auth? val) {
-                                          context.read<RadioBloc>().add(
-                                              RadioChangedEvent(auth: val!));
-                                        }),
-                                  ),
+                                  leading: Radio<Auth>(
+                                      value: Auth.signIn,
+                                      groupValue: state.auth,
+                                      onChanged: (Auth? val) {
+                                        context.read<RadioBloc>().add(
+                                            RadioChangedEvent(auth: val!));
+                                      }),
                                   title: RichText(
                                     text: const TextSpan(children: [
                                       TextSpan(

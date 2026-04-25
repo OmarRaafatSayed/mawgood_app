@@ -154,14 +154,6 @@ class _AdminAddProductScreenState extends State<AdminAddProductScreen> {
                                 .read<AdminAddProductsImagesBloc>()
                                 .add(SelectImagesPressedE()),
                             child: DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(10),
-                              dashPattern: const [10, 4],
-                              strokeCap: StrokeCap.round,
-                              color: Colors.black54,
-                              borderPadding:
-                                  const EdgeInsets.symmetric(horizontal: 5)
-                                      .copyWith(top: 5),
                               child: Container(
                                 width: double.infinity,
                                 height: 150,

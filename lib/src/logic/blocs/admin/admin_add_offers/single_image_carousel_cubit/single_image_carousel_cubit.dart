@@ -13,13 +13,13 @@ class SingleImageCubit extends Cubit<SingleImageState> {
     try {
       File? image;
 
-      FilePickerResult? imagePicked = await FilePicker.platform.pickFiles(
+      FilePickerResult? imagePicked = await FilePicker.pickFiles(
         allowMultiple: false,
         type: FileType.image,
       );
 
       if (imagePicked != null) {
-        image = File(imagePicked.files[0].path!);
+        image = File(imagePicked.files.single.path!);
       }
 
       emit(SingleImageSelected(image: image!));

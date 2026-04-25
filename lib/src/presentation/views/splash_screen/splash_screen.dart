@@ -27,6 +27,10 @@ class SplashScreen extends StatelessWidget {
         if (state is PageRedirectionInvalid) {
           context.goNamed(AppRouteConstants.authRoute.name);
         }
+
+        if (state is PageRedirectionError) {
+          context.goNamed(AppRouteConstants.authRoute.name);
+        }
       }, builder: ((context, state) {
         return Scaffold(
           body: Center(

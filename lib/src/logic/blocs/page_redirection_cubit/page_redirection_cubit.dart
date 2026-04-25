@@ -34,7 +34,7 @@ class PageRedirectionCubit extends Cubit<PageRedirectionState> {
         emit(PageRedirectionInvalid(isValid: isValid, userType: 'invalid'));
       }
     } catch (e) {
-      throw Exception(e.toString());
+        emit(PageRedirectionError());
     }
   }
 }

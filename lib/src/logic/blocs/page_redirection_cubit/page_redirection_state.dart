@@ -25,3 +25,9 @@ final class PageRedirectionInvalid extends PageRedirectionState {
   @override
   List<Object> get props => [isValid, userType];
 }
+
+final class PageRedirectionError extends PageRedirectionState {
+
+  @override
+  List<Object> get props => [];
+}

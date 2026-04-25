@@ -21,12 +21,12 @@ class AdminAddProductsImagesBloc
     try {
       List<File> imagesList = [];
 
-      var images = await FilePicker.platform.pickFiles(
+      var images = await FilePicker.pickFiles(
         type: FileType.image,
         allowMultiple: true,
       );
 
-      if (images != null || images!.files.isNotEmpty) {
+      if (images != null && images.files.isNotEmpty) {
         for (int i = 0; i < images.files.length; i++) {
           imagesList.add(File(images.files[i].path!));
         }
